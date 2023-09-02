@@ -1,18 +1,8 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Build
-
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
-  # push:
-  #   branches: [ "master" ]
-  # pull_request:
-  #   branches: [ "master" ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   first-job:
@@ -22,6 +12,22 @@ jobs:
         run: echo "Hello World!"
       - name: Second Step
         run: echo "Tschüss!"
+  second-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: First Step in second job
+        run: echo "Hello again!"
+      - name: Second Step in second job
+        run: echo "Auf Wiedersehen!"
+  third-job:
+    runs-on: windows-latest
+    # will run after "second-job"
+    needs: [second-job]
+    steps:
+      - name: First Step in third job
+        run: echo "LOL hello!"
+      - name: Second Step in third job
+        run: echo "Ciao!"
   # # This workflow contains a single job called "build"
   # build:
   #   # The type of runner that the job will run on
