@@ -1,0 +1,25 @@
+name: Event Types and Filters
+on:
+  push:
+    branches:
+      - main
+      - master
+      - feature/**
+    branches-ignore:
+      - release/**
+    tags-ignore:
+      - release-2020.**
+    tags:
+      - release-2023
+  pull_request:
+    types:
+      - opened
+      - closed
+      - reopened
+jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print
+        run: |
+          echo "Hallo!"
