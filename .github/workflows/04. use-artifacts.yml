@@ -1,0 +1,17 @@
+name: Show how to use Artifacts.
+on:
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+  build:
+    needs:
+      - test
+    runs-on: ubuntu-latest
+  deploy:
+    needs:
+      - build
+    runs-on: ubuntu-latest
