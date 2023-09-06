@@ -4,14 +4,43 @@ on:
     branches:
       - master
 jobs:
-  test:
+  test-and-lint:
     runs-on: ubuntu-latest
-
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: |
+          npm install
+      - name: Lint
+        run: |
+          npm run lint
   build:
     needs:
-      - test
+      - test-and-lint
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: |
+          npm install
+      - name: Build
+        run: |
+          npm run build
   deploy:
     needs:
       - build
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: |
+          npm install
+      - name: Build
+        run: |
+          npm run build
+      - name: Deploy
+        run: |
+          echo "Uploading to S3 bucket..."
