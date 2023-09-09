@@ -1,46 +1,119 @@
 name: Show how to use Artifacts.
+
+# Specify when the workflow should be triggered
 on:
   push:
     branches:
       - master
+  workflow_dispatch:
+
+# Define the jobs in the workflow
 jobs:
+  # Job for testing and linting
   test-and-lint:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Set up Node.js environment
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Setup Cache Path
+        id: cache_path
+        run: |
+          echo "::set-output name=CACHE_PATH::deps-node-modules-${{ hashFiles('**/package-lock.json') }}"
+      - name: Test
+        run: |
+          echo ${{ toJSON(needs) }}
+          echo ${{ toJSON(steps) }}
+          echo ${{ toJSON(vars) }}
+      # Cache dependencies to speed up workflow
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ steps.cache_path.outputs.CACHE_PATH }}
+
+      # Install project dependencies
       - name: Install Dependencies
         run: |
           npm install
-      - name: Lint
+
+      # Lint and run unit tests
+      - name: Lint And Test
         run: |
           npm run lint
+          npm run test:unit
+
+  # Job for building the project
   build:
     needs:
       - test-and-lint
     runs-on: ubuntu-latest
     steps:
+      # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Set up Node.js environment
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Test
+        run: | 
+          echo ${{ toJSON(needs) }}
+          echo ${{ toJSON(steps) }}
+
+      # Cache dependencies to speed up workflow
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ needs.lint_and_test.outputs.CACHE_PATH }}
+
+      # Install project dependencies
       - name: Install Dependencies
         run: |
           npm install
+
+      # Build the project
       - name: Build
         run: |
           npm run build
+
+      # Upload build artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-static-files
+          # if you only have one file or directory to upload, you can do like this: "path: dist", without "|"
+          path: |
+            dist
+
+  # Job for deploying the project
   deploy:
     needs:
       - build
     runs-on: ubuntu-latest
     steps:
+      # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Dependencies
+
+      # Download build artifacts
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: my-static-files
+          path: ./dist/
+
+      # Deploy (DRY-RUN) - Print file information
+      - name: Deploy(DRY-RUN)
         run: |
-          npm install
-      - name: Build
-        run: |
-          npm run build
-      - name: Deploy
-        run: |
-          echo "Uploading to S3 bucket..."
+          # Find and print files in the dist directory
+          find ./dist/ -type f -printf "Uploading %f to S3 bucket...\n"
