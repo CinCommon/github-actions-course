@@ -4,5 +4,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/
+      - name: Checkout
+      - name: Restore Cache
+      - name: Install Dependencies
+      - name: Build
+      - name: Connect to AWS
+      - name: List S3 Files
+      - name: Remove Unlinked Files
+      - name: Upload New Files
