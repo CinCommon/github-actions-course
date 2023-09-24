@@ -83,13 +83,13 @@ import {checkInputValidation} from "../util/v5-json-parse";
 const LINE = 0;
 const MARKER = 1;
 const PLACE_POSITION = {
-  "北京": {lat: 0.0, lng: 0.0},
-  "上海": {lat: 0.0, lng: 0.0},
-  "南京": {lat: 0.0, lng: 0.0},
-  "深圳": {lat: 0.0, lng: 0.0},
-  "香港": {lat: 0.0, lng: 0.0},
-  "澳门": {lat: 0.0, lng: 0.0},
-  "杭州": {lat: 0.0, lng: 0.0}
+  "北京": {lat: 39.895869, lng: 116.400970},
+  "上海": {lat: 31.230391, lng: 121.473701},
+  "南京": {lat: 32.051960, lng: 118.778030},
+  "深圳": {lat: 22.543097, lng: 114.057861},
+  "香港": {lat: 22.396427, lng: 114.109497},
+  "澳门": {lat: 22.198746, lng: 113.543877},
+  "杭州": {lat: 30.233566, lng: 120.195933}
 };
 
 const LOCATIONS_INPUT_MODAL_TITLE = "bv-modal-map-input"
